@@ -22,10 +22,31 @@ app.get('/notes', (req, res) =>
 
 app.get('/api/notes', (req, res) => res.json(notes));
 
-// app.post('api/notes', (req, res) => {
-//     let data = req.body;
-//     const {title, text} = data;
-// });
+app.post('/api/notes', (req, res) => {
+    
+    const {title, text} = req.body;
+    const newNote = {
+        title,
+        text
+    }
+    console.log(newNote);
+
+    fs.readFile('./db/db.json', 'utf-8', (err, data) => {
+        if(err){
+            console.log(err);
+        } else {
+            const parsedNotes = JSON.parse(data);
+
+            parsedNotes.push(newNote);
+
+            fs.writeFile('./db/db.json', 
+                JSON.stringify(parsedNotes, null, 4), 
+                (writeErr) =>
+            writeErr ? console.error(writeErr) : console.info('Successfully updated Notes')
+        )}    
+    })
+    res.status(201).json();
+});
 
 //Get Route For Universal HTML Page
 app.get('*', (req, res) => 
