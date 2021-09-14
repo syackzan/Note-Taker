@@ -2,7 +2,6 @@
 const express = require('express');
 const path = require('path')
 const fs = require('fs');
-let notes = require('./db/db.json');
 
 
 //Initializing express
@@ -20,6 +19,7 @@ app.get('/notes', (req, res) =>
     res.sendFile(path.join(__dirname, '/public/notes.html'))
 );
 
+// GET Request to read and return data stored in db.json
 app.get('/api/notes', (req, res) => 
         
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
@@ -29,6 +29,7 @@ app.get('/api/notes', (req, res) =>
     
 );
 
+// POST request to add a new note into the db.json file
 app.post('/api/notes', (req, res) => {
     
     const {title, text} = req.body;
@@ -68,13 +69,12 @@ app.delete("/api/notes/:id", (req, res) => {
 
        for (let i = 0; i < parsedData.length; i++){
            if (requestedId == parsedData[i].id){
-               console.log("Works so far");
                parsedData.splice(i, 1);
                 fs.writeFile('./db/db.json', JSON.stringify(parsedData, null, 4),
                 (writeErr) => writeErr ? console.error(writeErr) : console.info("Successfully Deleted & Updated"))
             res.status(201).json();
            } else {
-               //res.status(404).json({ message: "Channel you are looking for does not exist"});
+            res.status(404).json({ message: "Channel you are looking for does not exist"});
            }
        }
     })
@@ -87,6 +87,7 @@ app.get('*', (req, res) =>
     res.sendFile(path.join(__dirname, '/public/index.html'))
 );
 
+// Event Listener For the Host Port
 app.listen(PORT, () =>
     console.log(`APP is listening at http://localhost:${PORT}`)
 );
