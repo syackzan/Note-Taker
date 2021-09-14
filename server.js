@@ -7,7 +7,7 @@ const notes = require('./db/db.json');
 
 //Initializing express
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 //Middleware for Parsing JSON and urlencoded form data
 app.use(express.json());
@@ -27,7 +27,8 @@ app.post('/api/notes', (req, res) => {
     const {title, text} = req.body;
     const newNote = {
         title,
-        text
+        text,
+        id: Math.floor((Math.random() * 1000))
     }
     console.log(newNote);
 
