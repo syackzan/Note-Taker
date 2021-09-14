@@ -25,7 +25,6 @@ app.get('/api/notes', (req, res) =>
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         
         res.json(JSON.parse(data));
-        
     })
     
 );
@@ -38,7 +37,6 @@ app.post('/api/notes', (req, res) => {
         text,
         id: Math.floor((Math.random() * 1000))
     }
-    console.log(newNote);
 
     fs.readFile('./db/db.json', 'utf-8', (err, data) => {
         if(err){
@@ -55,6 +53,33 @@ app.post('/api/notes', (req, res) => {
         )}    
     })
     res.status(201).json();
+});
+
+app.delete("/api/notes/:id", (req, res) => {
+    //Storing ID that was selected from req.params
+    const requestedId = req.params.id
+    console.log(requestedId);
+
+    //Looping through Json File To Delete specified Channel
+
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        
+       let parsedData = JSON.parse(data);
+
+       for (let i = 0; i < parsedData.length; i++){
+           if (requestedId == parsedData[i].id){
+               console.log("Works so far");
+               parsedData.splice(i, 1);
+                fs.writeFile('./db/db.json', JSON.stringify(parsedData, null, 4),
+                (writeErr) => writeErr ? console.error(writeErr) : console.info("Successfully Deleted & Updated"))
+            res.status(201).json();
+           } else {
+               //res.status(404).json({ message: "Channel you are looking for does not exist"});
+           }
+       }
+    })
+
+    
 });
 
 //Get Route For Universal HTML Page
